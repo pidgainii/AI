@@ -1,4 +1,4 @@
-# AI Beginner Tasks  
+# Artificial Intelligence Fundamentals Tasks  
 Understanding the behavior of a Single Neuron (Perceptron), Shallow Neural Networks, Search Algorithms, and Fuzzy Control  
 
 # Task 1: Gaussian Data Generator
