@@ -1,8 +1,7 @@
-# AI
-Artificial Intelligence begginer tasks to understand the behaviour of a Single Neuron (Perceptron), a Shallow Neural Network, Search algorithms and Fuzzy Control
+# AI Beginner Tasks  
+Understanding the behavior of a Single Neuron (Perceptron), Shallow Neural Networks, Search Algorithms, and Fuzzy Control  
 
-
-# 🧪 Gaussian Data Generator - Task 1
+# Task 1: Gaussian Data Generator
 
 This Python desktop application allows you to generate and visualize 2D data samples drawn from Gaussian (normal) distributions, organized by classes and modes.
 
@@ -19,8 +18,8 @@ The program generates synthetic data simulating two distinct classes, each with 
 
 ## 🎮 How to Use
 
-1. **Modes per class**: Set how many modes each class will have (e.g., 2).
-2. **Samples per mode**: Set how many data points to generate per mode.
+1. **Modes per class**: Set how many modes each class will have (e.g., 2).  
+2. **Samples per mode**: Set how many data points to generate per mode.  
 3. Click **"Generate Data"** to create and visualize the samples.
 
 Blue points represent Class 0, and red points represent Class 1.
@@ -29,3 +28,8 @@ Blue points represent Class 0, and red points represent Class 1.
 
 ```bash
 pip install PyQt5 matplotlib numpy
+```
+
+## 📸 Screenshot
+
+![Task 1 Screenshot](Screenshots/task1screenshot.png)
