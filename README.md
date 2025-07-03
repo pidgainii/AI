@@ -3,24 +3,9 @@ Understanding the behavior of a Single Neuron (Perceptron), Shallow Neural Netwo
 
 # Task 1: Gaussian Data Generator
 
-This Python desktop application allows you to generate and visualize 2D data samples drawn from Gaussian (normal) distributions, organized by classes and modes.
-
 ## 📌 Description
 
 The program generates synthetic data simulating two distinct classes, each with multiple modes (distribution centers). Points are generated using a normal distribution with random means and variances for each mode. The results are dynamically displayed on an integrated plot using Matplotlib and PyQt5.
-
-## 🛠️ Technologies Used
-
-- **Python 3**
-- **PyQt5** – for the graphical user interface
-- **Matplotlib** – for data visualization
-- **NumPy** – for random data generation
-
-## 🎮 How to Use
-
-1. **Modes per class**: Set how many modes each class will have (e.g., 2).  
-2. **Samples per mode**: Set how many data points to generate per mode.  
-3. Click **"Generate Data"** to create and visualize the samples.
 
 Blue points represent Class 0, and red points represent Class 1.
 
@@ -32,26 +17,17 @@ Blue points represent Class 0, and red points represent Class 1.
 
 # Task 2: Gaussian Data Generator with Single Neuron Training
 
-This Python desktop application extends Task 1 by adding a single neuron (perceptron) that learns to classify the generated Gaussian data. The neuron uses various activation functions (default: Heaviside) and plots the decision boundary after training.
-
 ## 📌 Description
 
 The program generates synthetic data similar to Task 1, then trains a single neuron to separate the two classes. It visualizes the data points along with the neuron's decision boundary and background coloring indicating the classified regions.
 
-## 🛠️ Technologies Used
-
-- **Python 3**
-- **PyQt5** – for the graphical user interface
-- **Matplotlib** – for data visualization
-- **NumPy** – for random data generation and neuron computations
-
-## 🎮 How to Use
-
-1. **Modes per class**: Set how many modes each class will have (e.g., 2).  
-2. **Samples per mode**: Set how many data points to generate per mode.  
-3. Click **"Generate Data and Train Neuron"** to create and visualize the samples.
-
 Blue points represent Class 0, red points represent Class 1, and the green dashed line shows the neuron's decision boundary.
+
+The perceptron receives all the coordinates as the input data, and one by one processes them. It makes a prediction on which class does it think this coordinate belong to. After that, the real label is compared to the prediction, and learning occurs (formula below)
+
+![Task 2 formula](Screenshots/task2.1screenshot.png)
+
+After training for 2000 epochs (adjustable) with learning rate 0.1 (adjustable), the perceptron has learned the necessary parameters to draw the decision boundary
 
 ## 📸 Screenshot
 
