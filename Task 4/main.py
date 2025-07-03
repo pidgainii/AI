@@ -290,7 +290,7 @@ class HumanPlayer(Player):
 
 
 class SearchBasedPlayer(Player):
-    ALGORITHM = "A*"  # This can be set to "BFS", "DFS", "Dijkstra", or "A*"
+    ALGORITHM = "Dijkstra"  # This can be set to "BFS", "DFS", "Dijkstra", or "A*"
 
     def __init__(self):
         super().__init__()
