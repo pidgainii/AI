@@ -27,8 +27,32 @@ The perceptron receives all the coordinates as the input data, and one by one pr
 
 ![Task 2 formula](Screenshots/task2.1screenshot.png)
 
-After training for 2000 epochs (adjustable) with learning rate 0.1 (adjustable), the perceptron has learned the necessary parameters to draw the decision boundary
+
+# Task 3: Shallow Neural Network
+
+## 📌 Description
+
+This program implements a shallow neural network that contains two types of layers: linear, and activation.
+
+
+Linear layer has got 3 functions:
+  - forward(self, input_data)
+  - backward(self, output_error)
+  - update_weights(self, input_data, lr)
+
+The forward function computes the inputs with it's weights, and adds the bias.
+The backward function calculates the error and returns it.
+The update_weights function updates the parameters of the layer using the learning rate
+
+
+Activation layer has got only forward and backward functions. The activation function can be chosen by the user:
+  - Sigmoid
+  - Tanh
+  - ReLU
+
+
+The number of layers, and neurons per layer can also be adjusted by the user.
 
 ## 📸 Screenshot
 
-![Task 2 Screenshot](Screenshots/task2screenshot.png)
+![Task 3 Screenshot](Screenshots/task3screenshot.png)
