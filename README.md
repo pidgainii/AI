@@ -27,6 +27,13 @@ The perceptron receives all the coordinates as the input data, and one by one pr
 
 ![Task 2 formula](Screenshots/task2.1screenshot.png)
 
+## 📸 Screenshot
+
+![Task 2 Screenshot](Screenshots/task2screenshot.png)
+
+
+
+
 
 # Task 3: Shallow Neural Network
 
