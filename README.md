@@ -77,7 +77,7 @@ This program implements the snake game, on autopilot mode. 4 different search al
   - Dijkstra
 
 
-in this code line, you can modify the algorithm that is being used by the snake:
+In this code line, you can modify the algorithm that is being used by the snake:
 
 ```
 ALGORITHM = "Dijkstra"  # This can be set to "BFS", "DFS", "Dijkstra", or "A*"
@@ -88,3 +88,34 @@ The squares in a darker blue tone are the squares that have been explored by the
 ## 📸 Screenshot
 
 ![Task 4 Screenshot](Screenshots/task4screenshot.png)
+
+
+# Task 5: Fuzzy Control
+
+## 📌 Description
+
+This programe implements the classic Pong game, on autopilot mode, and human player. In comparison with the classic version, this implementation provides a different way of increasing the speed of the ball. If the ball is deflected using the 25% edgemost of the paddle, its speed increases by 10%.
+
+3 different fuzzy models are implemented:
+  - Mamdani
+  - Takagi-Sugeno-Kang (TSK)
+  - Mamdani with an extra functionality to hit the ball with the edge of the paddle (to increase the speed of the ball)
+
+In this part of the code you can choose which strategy you want to use, or if you want to play as a human:
+
+```
+if __name__ == "__main__":
+    game = PongGame(800, 400, NaiveOponent, HumanPlayer)
+
+    # game = PongGame(800, 400, NaiveOponent, FuzzyPlayerMamdani)
+    # game = PongGame(800, 400, NaiveOponent, FuzzyPlayerTSK)
+    # game = PongGame(800, 400, NaiveOponent, FuzzyPlayerStrategy)
+    game.run()
+```
+
+The 3 commented lines are for the 3 different strategies
+
+## 📸 Screenshot
+
+![Task 5 Screenshot](Screenshots/task5screenshot.png)
+
