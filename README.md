@@ -63,3 +63,28 @@ The number of layers, and neurons per layer can also be adjusted by the user.
 ## 📸 Screenshot
 
 ![Task 3 Screenshot](Screenshots/task3screenshot.png)
+
+
+# Task 4: Search algorithms
+
+## 📌 Description
+
+This program implements the snake game, on autopilot mode. 4 different search algorithms are implemented:
+
+  - BFS
+  - DFS
+  - A star
+  - Dijkstra
+
+
+in this code line, you can modify the algorithm that is being used by the snake:
+
+```
+ALGORITHM = "Dijkstra"  # This can be set to "BFS", "DFS", "Dijkstra", or "A*"
+```
+
+The squares in a darker blue tone are the squares that have been explored by the algorithm to find the path
+
+## 📸 Screenshot
+
+![Task 4 Screenshot](Screenshots/task4screenshot.png)
