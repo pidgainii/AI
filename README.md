@@ -15,7 +15,7 @@ Blue points represent Class 0, and red points represent Class 1.
 
 
 
-# Task 2: Gaussian Data Generator with Single Neuron Training
+# Task 2: Single Neuron Training (Perceptron)
 
 ## 📌 Description
 
