@@ -1,77 +1,115 @@
-import streamlit as st
+import tkinter as tk
+from tkinter import ttk, messagebox
 import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
-from neural_network import NeuralNetwork  # Assuming you have this implemented
+from neural_network import SimpleNeuralNet
 
-# Streamlit App
-st.title("Data Generation and Neural Network Classification")
+class NeuralNetApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Neural Network Configurator")
+        self.root.geometry("700x300")  # Smaller configuration window
 
-# Input parameters
-modes_per_class = st.number_input("Number of Modes per Class", min_value=1, value=2, step=1)
-samples_per_mode = st.number_input("Number of Samples per Mode", min_value=1, value=50, step=1)
+        style = ttk.Style()
+        style.theme_use("clam")
+        style.configure("TLabel", font=("Arial", 12))
+        style.configure("TButton", font=("Arial", 12))
+        style.configure("TEntry", font=("Arial", 12))
+        style.configure("TCombobox", font=("Arial", 12))
 
-# Generate button
-if st.button("Generate and Classify"):
-    # Data generation
-    data0x, data0y, data1x, data1y = [], [], [], []
-    for i in range(2):  # Two classes
-        for j in range(modes_per_class):
-            mean_x = np.random.uniform(0, 100)
-            mean_y = np.random.uniform(0, 100)
-            variance_x = np.random.uniform(0, 100)
-            variance_y = np.random.uniform(0, 100)
+        self.add_configuration_widgets()
 
-            for _ in range(samples_per_mode):
-                x = np.random.normal(loc=mean_x, scale=np.sqrt(variance_x))
-                y = np.random.normal(loc=mean_y, scale=np.sqrt(variance_y))
+    def add_configuration_widgets(self):
+        inputs_frame = ttk.LabelFrame(self.root, text="Network Parameters", padding=10)
+        inputs_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-                if i == 0:
-                    data0x.append(x)
-                    data0y.append(y)
-                else:
-                    data1x.append(x)
-                    data1y.append(y)
+        # First column
+        ttk.Label(inputs_frame, text="Modes Class 0:").grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        self.modes_0 = ttk.Entry(inputs_frame)
+        self.modes_0.grid(row=0, column=1, padx=5, pady=5)
 
-    data0 = [[x, y] for x, y in zip(data0x, data0y)]
-    data1 = [[x, y] for x, y in zip(data1x, data1y)]
+        ttk.Label(inputs_frame, text="Modes Class 1:").grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        self.modes_1 = ttk.Entry(inputs_frame)
+        self.modes_1.grid(row=1, column=1, padx=5, pady=5)
 
-    # Create Neural Network
-    input_layer_width = 2  # Two inputs: x and y
-    hidden_layer_width = 3
-    hidden_layer_depth = 3
-    learning_rate = 0.0001
-    epochs = 450
+        ttk.Label(inputs_frame, text="Samples per Mode:").grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        self.samples = ttk.Entry(inputs_frame)
+        self.samples.grid(row=2, column=1, padx=5, pady=5)
 
-    # Output size 2 (for two classes)
-    neuron = NeuralNetwork(input_layer_width, hidden_layer_width, hidden_layer_depth, learning_rate, epochs)
-    neuron.training(data0, data1)
+        # Second column
+        ttk.Label(inputs_frame, text="Hidden Layers:").grid(row=0, column=2, padx=5, pady=5, sticky=tk.W)
+        self.hidden_layers = ttk.Entry(inputs_frame)
+        self.hidden_layers.grid(row=0, column=3, padx=5, pady=5)
 
+        ttk.Label(inputs_frame, text="Neurons/Hidden Layer:").grid(row=1, column=2, padx=5, pady=5, sticky=tk.W)
+        self.neurons = ttk.Entry(inputs_frame)
+        self.neurons.grid(row=1, column=3, padx=5, pady=5)
 
+        ttk.Label(inputs_frame, text="Activation Function:").grid(row=2, column=2, padx=5, pady=5, sticky=tk.W)
+        self.activation = ttk.Combobox(inputs_frame, values=["sigmoid", "tanh", "relu"], state="readonly")
+        self.activation.set("sigmoid")
+        self.activation.grid(row=2, column=3, padx=5, pady=5)
 
-    # Generate grid for visualization
-    x_min, x_max = min(min(data0x), min(data1x)) - 10, max(max(data0x), max(data1x)) + 10
-    y_min, y_max = min(min(data0y), min(data1y)) - 10, max(max(data0y), max(data1y)) + 10
-    xx, yy = np.meshgrid(np.linspace(x_min, x_max, 100), np.linspace(y_min, y_max, 100))
+        # Button
+        ttk.Button(inputs_frame, text="Generate and Train", command=self.process).grid(row=3, column=0, columnspan=4, pady=10)
 
-    # Predict class for each point in the grid
-    grid_points = np.c_[xx.ravel(), yy.ravel()]
-    predictions = np.array([neuron.predict(p[0], p[1]) for p in grid_points])  # Each prediction is a 2-element array
+    def create_data(self, n_samples, n_modes, label):
+        data = []
+        for _ in range(n_modes):
+            mean = np.random.uniform(-1, 1, 2)
+            cov = np.random.uniform(0.1, 0.5, (2, 2))
+            cov = np.dot(cov, cov.T)
+            samples = np.random.multivariate_normal(mean, cov, n_samples)
+            data.append(samples)
+        return np.vstack(data), [label] * len(np.vstack(data))
 
-    # Use only the first neuron's output directly
-    predicted_classes = (predictions[:, 0] > 0.5).astype(int)  # Classify based on a threshold (e.g., 0.5)
-    predicted_classes = predicted_classes.reshape(xx.shape)
+    def process(self):
+        try:
+            modes_0 = int(self.modes_0.get())
+            modes_1 = int(self.modes_1.get())
+            samples = int(self.samples.get())
+            layers = int(self.hidden_layers.get())
+            neurons = int(self.neurons.get())
+            act_func = self.activation.get()
 
+            data_0, labels_0 = self.create_data(samples, modes_0, 0)
+            data_1, labels_1 = self.create_data(samples, modes_1, 1)
 
+            X = np.vstack((data_0, data_1))
+            y = np.array(labels_0 + labels_1)
 
-    # Plot results
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.contourf(xx, yy, predicted_classes, alpha=0.5, cmap="RdBu_r")  # Red for Class 0, Blue for Class 1
-    ax.scatter(data0x, data0y, color="blue", label="Class 0")  # Blue for Class 0
-    ax.scatter(data1x, data1y, color="red", label="Class 1")  # Red for Class 1
+            # Model setup and training
+            model = SimpleNeuralNet(2, neurons, layers, act_func, lr=0.01, iterations=500)
+            model.train(X, y)
 
-    ax.legend()
-    ax.set_title("Data and Classification Boundary")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
+            # Open visualization window
+            self.open_visualization_window(model, X, y)
 
-    st.pyplot(fig)
+        except ValueError:
+            messagebox.showerror("Error", "Ensure valid integer inputs!")
+
+    def open_visualization_window(self, model, X, y):
+        vis_window = tk.Toplevel(self.root)
+        vis_window.title("Visualization")
+        vis_window.geometry("800x600")  # Larger visualization window
+
+        x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+        y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+        xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1), np.arange(y_min, y_max, 0.1))
+
+        Z = np.array([model.predict(np.array([a, b]))[0] for a, b in zip(xx.ravel(), yy.ravel())])
+        Z = Z.reshape(xx.shape)
+
+        fig, ax = plt.subplots()
+        ax.contourf(xx, yy, Z, alpha=0.8, cmap='bwr')
+        ax.scatter(X[:, 0], X[:, 1], c=y, cmap='bwr', edgecolors='k')
+
+        canvas = FigureCanvasTkAgg(fig, master=vis_window)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = NeuralNetApp(root)
+    root.mainloop()

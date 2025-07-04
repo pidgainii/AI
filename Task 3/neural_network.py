@@ -1,78 +1,48 @@
-from linear import Linear
-from sigmoid import Sigmoid
-from softmax import Softmax
 import numpy as np
+from linear import LinearLayer
+from activation import ActivationLayer
 
-class NeuralNetwork:
-
-    def __init__(self, input_width, hidden_width, hidden_depth, learning_rate, epochs):
-        self.learning_rate = learning_rate
-        self.epochs = epochs
-
+class SimpleNeuralNet:
+    def __init__(self, inputs, neurons_per_hidden, hidden_layers, act_func='sigmoid', lr=0.1, iterations=400):
+        self.lr = lr
+        self.iterations = iterations
         self.layers = []
 
-        self.layers.append(Linear(2, input_width))
-        self.layers.append(Sigmoid())
+        # Configuración de la arquitectura
+        structure = [inputs] + [neurons_per_hidden] * hidden_layers + [2]
+        for idx in range(len(structure) - 1):
+            self.layers.append(LinearLayer(structure[idx], structure[idx + 1]))
+            self.layers.append(ActivationLayer(act_func))
 
-        width = input_width
-
-        for i in range(hidden_depth):
-            self.layers.append(Linear(width, hidden_width))
-            self.layers.append(Sigmoid())
-
-            width = hidden_width
-        
-        # depth of the output layer is 2
-        self.layers.append(Linear(width, 2))
-        self.layers.append(Sigmoid())
-
-
-    def forward(self, x):
+    def forward_propagation(self, x):
+        activations = [x]
         for layer in self.layers:
-            x = layer.forward(x)
-        return x
+            activations.append(layer.forward(activations[-1]))
+        return activations
 
-    def backward(self, grad):
-        for layer in reversed(self.layers):
-            grad = layer.backward(grad)
+    def backward_propagation(self, x, y):
+        activations = self.forward_propagation(x)
+        errors = [None] * len(self.layers)
 
-    def adjust(self, learning_rate):
-        for layer in self.layers:
-            layer.adjust(learning_rate)
+        # Error en la salida
+        errors[-1] = activations[-1] - y
+        for i in range(len(self.layers) - 1, 0, -1):
+            errors[i - 1] = self.layers[i].backward(errors[i])
+        self.layers[0].backward(errors[0])
 
+        # Actualizar pesos
+        for i, layer in enumerate(self.layers):
+            if isinstance(layer, LinearLayer):
+                layer.update_weights(activations[i], self.lr)
 
+    def train(self, X, y):
+        for _ in range(self.iterations):
+            for idx in range(X.shape[0]):
+                x_i = X[idx].reshape(-1, 1)
+                y_i = np.zeros((2, 1))
+                y_i[int(y[idx])] = 1
+                self.backward_propagation(x_i, y_i)
 
-    # Training function for the Neuron
-    def training(self, data0, data1):
-        for e in range(self.epochs):
-
-
-            # Shuffle the data for each class separately
-            np.random.shuffle(data0)
-            np.random.shuffle(data1)
-
-            for i in range(len(data1)):
-                self.train(data0[i][0], data0[i][1], 0)
-                self.train(data1[i][0], data1[i][1], 1)
-
-
-    def train(self, x, y, class_label):
-        # primero hacemos el forward, calculamos el error.
-        # hacemos el backward, y por ultimo el adjust
-
-        prediction = self.forward((x, y))
-
-
-        grad0 = prediction[0] - class_label
-        grad1 = prediction[1] - class_label
-
-
-        grad = np.array([grad0, grad1])
-        
-
-        self.backward(grad)
-
-        self.adjust(self.learning_rate)
-
-    def predict(self, x, y):
-        return self.forward((x, y))
+    def predict(self, x):
+        activations = self.forward_propagation(x.reshape(-1, 1))
+        return np.argmax(activations[-1]), activations[-1].flatten()
